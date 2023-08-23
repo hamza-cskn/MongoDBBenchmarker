@@ -19,9 +19,9 @@ not supported yet
 <img width="457" alt="image" src="https://github.com/hamza-cskn/MongoDBBenchmarker/assets/36128276/d889097c-4442-43c8-974e-47ea0e0aa87d">
 
 ### Placeholders
-* **Id:** Iteration number
+* **Id:** Iteration number.
   * Format: `%id%`
-* **Random String** randomized string with specific length
+* **Random String** randomized string with specific length.
   * Format: `%string(n)%`
 * **Random Integer** random integer in specific range.
   * Format: `%int(5,10)%`
