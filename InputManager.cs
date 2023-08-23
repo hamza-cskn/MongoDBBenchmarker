@@ -1,131 +1,93 @@
+using System.Collections.Immutable;
 using MongoDB.Bson;
+using MongoDBBenchmark.Generator;
 
 namespace MongoDBBenchmark;
 
 public class InputManager
 {
-    public static string GetConnectionString()
-    {
-        Console.WriteLine("Please enter your MongoDB connection string: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        if (input == null)
-            return GetConnectionString();
-        return input;
-    }
+    public static Func<string, string> GetStringInput => (msg) =>
+        GetInput(msg, s => s);
     
-    public static int GetNumberOfDocuments()
-    {
-        Console.WriteLine("Please enter number of documents: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        if (!Int32.TryParse(input, out int numOfDocuments))
-        {
-            Console.WriteLine("Error! Invalid number.");
-            return GetNumberOfDocuments();
-        }
-        return numOfDocuments;
-    }
+    public static Func<string, int> GetIntInput = (msg) =>
+        GetInput(msg, int.Parse, i => i > 0);
 
-    public static Func<int, BsonDocument> GetDocumentGenerator()
+    public static Func<string, BsonDocument> GetDocumentInput = (msg) =>
+        GetInput(msg, BsonDocument.Parse);
+    
+    public static Func<BsonDocument> GetFilterInput = () =>
+        GetDocumentInput("Please enter document for filtering:");
+    
+    public static Func<Operations> GetOperationInput = () =>
+        GetInput("Supported Operations: Insert, Update, Delete, Read\nPlease enter operation type: ", 
+            s => OperationsExtensions.FromString(s)!.Value);
+
+    /**
+     * Returns document generator based on user input.
+     */
+    public static IDocumentGenerator GetDocumentGeneratorInput()
     {
         Console.WriteLine("Please enter document type. ");
         Console.WriteLine("You can use templates: User, Product, Order");
         Console.WriteLine("Or you can write your own document in BSON format.");
-        Console.WriteLine("Custom document example: {\"name\": \"John\", \"age\": 20}");
-        Console.WriteLine("You can use these placeholders in custom documents:");
-        Console.WriteLine("'{int,1,10}' - random integer between 1 and 10");
-        Console.WriteLine("'%id%' - iteration number");
-        Console.WriteLine("'%string(5)%' - random string with length 5");
-        Console.WriteLine("Please enter document: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        var document = BsonDocument.Parse(input); // todo check parse errors
-        if (document == null)
-        {
-            Console.WriteLine("Error! Invalid document type.");
-            return GetDocumentGenerator();
-        }
+        Console.WriteLine("Custom document example: {\"name\": \"Hamza\", \"age\": 19}");
+        Console.WriteLine("You can use these placeholders in documents as string:");
+        Console.WriteLine("- '%int,1,10%' - random integer between 1 and 10");
+        Console.WriteLine("- '%id%' - iteration number");
+        Console.WriteLine("- '%string(5)%' - random string with length 5");
+        var document = GetDocumentInput("Please enter template document for generating:");
+        return new CustomGenerator(document, MapPlaceholders(document).ToImmutableDictionary());
+    }
 
+    /**
+     * Stores which fields are placeholders. To apply them later.
+     */
+    private static Dictionary<string, Placeholder> MapPlaceholders(BsonDocument document)
+    {
         Dictionary<string, Placeholder> placeholders = new();
-        foreach (var documentName in document.Names)
-        {
-            var val = document.GetValue(documentName);
-            if (!val.IsString)
-                continue;
-            var placeholder = Placeholder.TryParse(val.AsString);
-            if (placeholder == null)
-                continue;
-            placeholders.Add(documentName, placeholder);
-        }
-        return (id) =>
-        {
-            document = (BsonDocument)document.Clone();
-            foreach (var (key, value) in placeholders)
-            {
-                value.Apply(id, key, document);
-            }
-            return document;
-        };
-    }
-    
-    public static Operations GetOperation()
-    {
-        Console.WriteLine("Supported Operations: Insert, Update, Delete, Read");
-        Console.WriteLine("Please enter operation type: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        var operation = OperationsExtensions.FromString(input);
-        if (operation == null)
-        {
-            Console.WriteLine("Error! Invalid operation type.");
-            return GetOperation();
-        }
-        return operation.Value;
-    }
-    
-    public static BsonDocument GetFilter()
-    {
-        Console.WriteLine("Please enter filter: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        var filter = BsonDocument.Parse(input); // todo check parse errors
-        if (filter == null)
-        {
-            Console.WriteLine("Error! Invalid filter.");
-            return GetFilter();
-        }
-        return filter;
+        document.Names
+            .Where(documentName => document.GetValue(documentName).IsString).ToList()
+            .ForEach(documentName =>
+                {
+                    var val = document.GetValue(documentName);
+                    var placeholder = Placeholder.TryParse(val.AsString);
+                    if (placeholder != null)
+                        placeholders.Add(documentName, placeholder);
+                });
+        return placeholders;
     }
 
-    public static string GetDatabaseName()
+    /**
+     *  Generic input method. Gets input from user, parses and validates it.
+     *  If input is invalid, it will ask again.
+     *  If input is null, assumes it is invalid.
+     *  If input is "exit", it will exit the program.
+     */
+    public static T GetInput<T>(string message, Func<string, T> parser, Func<T, bool>? validate = null)
     {
-        Console.WriteLine("Please enter database name: ");
-        var input = Console.ReadLine();
+        Console.WriteLine(message);
+        string? input = Console.ReadLine();
         if (input == "exit")
             Environment.Exit(0);
         if (input == null)
+            return GetInput(message, parser, validate);
+        
+        T val;
+        try
         {
-            return GetDatabaseName();
-        }
-        return input;
-    }
-    
-    public static string GetCollectionName()
-    {
-        Console.WriteLine("Please enter collection name: ");
-        var input = Console.ReadLine();
-        if (input == "exit")
-            Environment.Exit(0);
-        if (input == null)
+            val = parser(input);
+        } catch (Exception e)
         {
-            return GetCollectionName();
+            Console.WriteLine("Error! Input could not parsed.");
+            Console.WriteLine(e.Message);
+            return GetInput(message, parser, validate);
         }
-        return input;
+        
+        if (validate != null && !validate(val))
+        {
+            Console.WriteLine("Error! Invalid input.");
+            return GetInput(message, parser, validate);
+        }
+        return val;
     }
 }
