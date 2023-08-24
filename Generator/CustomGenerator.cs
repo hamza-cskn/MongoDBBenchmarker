@@ -5,13 +5,11 @@ namespace MongoDBBenchmark.Generator;
 
 public class CustomGenerator : IDocumentGenerator
 {
-    private BsonDocument _document;
-    private ImmutableDictionary<string, Placeholder> _placeholders;
+    private readonly DocumentTemplate _template;
     
-    public CustomGenerator(BsonDocument document, ImmutableDictionary<string, Placeholder> placeholders)
+    public CustomGenerator(DocumentTemplate template)
     {
-        _document = document;
-        _placeholders = placeholders.ToImmutableDictionary();
+        _template = template;
     }
 
     public BsonDocument[] Generate(int amount)
@@ -24,10 +22,16 @@ public class CustomGenerator : IDocumentGenerator
 
     private BsonDocument GenerateOne(int id)
     {
-        var document = (BsonDocument) _document.Clone();
-        foreach (var (key, value) in _placeholders)
+        var document = (BsonDocument) _template.Document.Clone();
+        foreach (var (key, value) in _template.Placeholders)
             value.Apply(id, key, document);
         return document;
     }
+    
+    public string GetRawTemplate()
+    {
+        return _template.RawTemplate;
+    }
+
     
 }

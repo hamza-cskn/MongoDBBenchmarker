@@ -12,9 +12,16 @@ public class InputManager
     public static Func<string, int> GetIntInput = (msg) =>
         GetInput(msg, int.Parse, i => i > 0);
 
+    public static Func<string, DocumentTemplate> GetDocumentTemplateInput = (msg) =>
+        GetInput(msg, (str) =>
+        {
+            var document = BsonDocument.Parse(str);
+            return new DocumentTemplate(str, document, MapPlaceholders(document).ToImmutableDictionary());
+        });
+    
     public static Func<string, BsonDocument> GetDocumentInput = (msg) =>
         GetInput(msg, BsonDocument.Parse);
-    
+
     public static Func<BsonDocument> GetFilterInput = () =>
         GetDocumentInput("Please enter document for filtering:");
     
@@ -35,8 +42,8 @@ public class InputManager
         Console.WriteLine("- '%int,1,10%' - random integer between 1 and 10");
         Console.WriteLine("- '%id%' - iteration number");
         Console.WriteLine("- '%string(5)%' - random string with length 5");
-        var document = GetDocumentInput("Please enter template document for generating:");
-        return new CustomGenerator(document, MapPlaceholders(document).ToImmutableDictionary());
+        var document = GetDocumentTemplateInput("Please enter template document for generating:");
+        return new CustomGenerator(document);
     }
 
     /**

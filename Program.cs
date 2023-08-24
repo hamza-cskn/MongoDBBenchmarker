@@ -63,16 +63,18 @@ void ReadOperation()
 {
     BsonDocument filter = GetFilterInput();
     Console.WriteLine("Starting benchmark.");
-    var stopwatch = new Stopwatch();
-    stopwatch.Start();
-    var result = collection.Find(filter).ToList();
-    stopwatch.Stop();
-    Console.WriteLine("Benchmark finished. Time elapsed: " + stopwatch.GetElapsedTime());
+    var benchmark = new Benchmark<List<BsonDocument>>(
+        () => collection.Find(filter).ToList(),
+        filter.ToString());
+    List<BsonDocument> result = benchmark.Run(res => "READ - Count: " + res.Count+ ", Time: {time}, Filter: {input}");
+    Console.WriteLine("Benchmark finished. Time elapsed: " + benchmark.GetElapsedTime());
     Console.WriteLine("Totally " + result.Count + " documents found.");
     Console.WriteLine("Write 'back' to go back to main menu or 'exit' to exit.");
-    Console.WriteLine("Write 'show(n)' to show first n documents.");
-    Console.WriteLine("Write anything else to read again.");
-    ShowResults(result);
+    if (result.Count > 0)
+    {
+        Console.WriteLine("Write 'show(n)' to show first n documents.");
+        ShowResults(result);
+    }
 }
 
 void ShowResults(List<BsonDocument> result)
@@ -94,7 +96,7 @@ void ShowResults(List<BsonDocument> result)
                 Console.WriteLine("Error! Invalid number.");
                 continue;
             }
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < Math.Min(n, result.Count); i++)
             {
                 Console.WriteLine(i + ":" + result[i]);
             }
@@ -106,16 +108,22 @@ void DeleteOperation()
 {
     BsonDocument filter = GetFilterInput();
     Console.WriteLine("Starting benchmark.");
-    var stopwatch = Stopwatch.Evaluate(() => collection.DeleteMany(filter));
-    Console.WriteLine("Benchmark finished. Time elapsed: " + stopwatch.GetElapsedTime());
+    var benchmark = new Benchmark<DeleteResult>(
+        () => collection.DeleteMany(filter),
+        filter.ToString());
+    benchmark.Run(res => "DELETE - Count: " + res.DeletedCount + ", Time {time}, Filter: {input}");
+    Console.WriteLine("Benchmark finished. Time elapsed: " + benchmark.GetElapsedTime());
 }
 
 void UpdateOperation()
 {
     BsonDocument filter = GetFilterInput();
     BsonDocument update = GetDocumentInput("Please enter update document: ");
-    var stopwatch = Stopwatch.Evaluate(() => collection.UpdateMany(filter, update));
-    Console.WriteLine("Benchmark finished. Time elapsed: " + stopwatch.GetElapsedTime());
+    var benchmark = new Benchmark<UpdateResult>(
+        () => collection.UpdateMany(filter, update),
+        filter.ToString());
+    benchmark.Run(res => "UPDATE - Count: " + res.ModifiedCount + ", Time {time}, Filter: {input}, Updated: " + update);
+    Console.WriteLine("Benchmark finished. Time elapsed: " + benchmark.GetElapsedTime());
 }
 
 void InsertOperation(IDocumentGenerator documentGenerator)
@@ -125,8 +133,15 @@ void InsertOperation(IDocumentGenerator documentGenerator)
     Console.WriteLine("Documents Generating...");
     BsonDocument[] documents = documentGenerator.Generate(numOfDocuments);
     Console.WriteLine("Bulk Inserting...");
-    var stopwatch = Stopwatch.Evaluate(() => collection.InsertMany(documents));
-    Console.WriteLine("Benchmark finished. Time elapsed: " + stopwatch.GetElapsedTime());
+    var benchmark = new Benchmark<object>(
+        () =>
+        {
+            collection.InsertMany(documents);
+            return null;
+        },
+        documentGenerator.GetRawTemplate());
+    benchmark.Run(x => "INSERT - Count: " + numOfDocuments + ", Time: {time}, Template: {input}");
+    Console.WriteLine("Benchmark finished. Time elapsed: " + benchmark.GetElapsedTime());
     Console.WriteLine("Write 'back' to go back to main menu or 'exit' to exit.");
     Console.WriteLine("Write anything else to insert again.");
     var input = Console.ReadLine();
