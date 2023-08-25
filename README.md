@@ -34,7 +34,7 @@ $ docker run -v <PATH_TO_CONFIG_FILE>:/app/operations.json:ro \
 MongoDB Benchmarker supports Insert, Update, Read and Delete operations.
 
 ## Logging
-Every operation is stored in operation-log.txt file. Here's example logs.
+Every operation is stored in operations.log file. Here's example logs.
 ```log
 2023-08-23 21:14:12 - INSERT - Count: 1000, Time: 00:00:00.1622390, Template: {name:"saadasdsa"}
 2023-08-23 21:14:33 - INSERT - Count: 100000, Time: 00:00:09.7082600, Template: {name:"saadasdsa"}
