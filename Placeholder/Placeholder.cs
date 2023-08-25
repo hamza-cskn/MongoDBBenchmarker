@@ -1,13 +1,12 @@
-using System.Collections.Immutable;
 using MongoDB.Bson;
 
-namespace MongoDBBenchmark;
+namespace MongoDBBenchmark.Placeholder;
 
-public interface Placeholder
+public interface IPlaceholder
 {
-    static Placeholder? TryParse(string str)
+    static IPlaceholder? TryParse(string str)
     {
-        return new Placeholder?[]
+        return new IPlaceholder?[]
         {
             StringPlaceholder.FromString(str),
             IntPlaceholder.FromString(str),

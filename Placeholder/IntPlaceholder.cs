@@ -1,8 +1,9 @@
 using MongoDB.Bson;
+using MongoDBBenchmark.Placeholder;
 
 namespace MongoDBBenchmark;
 
-public class IntPlaceholder : Placeholder
+public class IntPlaceholder : IPlaceholder
 {
     private int _min;
     private int _max;
@@ -32,6 +33,8 @@ public class IntPlaceholder : Placeholder
     
     public void Apply(int id, String key, BsonDocument bsonDocument)
     {
-        bsonDocument.Set(key, new Random().Next(_min, _max));
+        var val = new Random().Next(_min, _max);
+        Console.WriteLine("Applying int placeholder with value " + val);
+        bsonDocument.Set(key, val);
     }
 }

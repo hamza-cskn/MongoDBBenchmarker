@@ -1,8 +1,9 @@
 using MongoDB.Bson;
+using MongoDBBenchmark.Placeholder;
 
 namespace MongoDBBenchmark;
 
-public class StringPlaceholder : Placeholder
+public class StringPlaceholder : IPlaceholder
 {
     private int _length;
 

@@ -1,8 +1,9 @@
 using MongoDB.Bson;
+using MongoDBBenchmark.Placeholder;
 
 namespace MongoDBBenchmark;
 
-public class IdPlaceholder : Placeholder
+public class IdPlaceholder : IPlaceholder
 {
     public static IdPlaceholder? FromString(string str)
     {
