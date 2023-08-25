@@ -3,24 +3,30 @@
 This is a simple tool to benchmark MongoDB performance. It allows to bulk updates, inserts, reads and deletes. It generates random data as you want. For each query it measures the time it took to execute it and the number of operations per second.
 
 ## Installing
-
+You need `operations.json` and `operations.log` files to use the application properly. 
+* `operations.json` file is a configuration file for bulk operations. You have to configure it for using with Docker. However if you want to use CLI mode, you don't need it.
+* `operations.log` file is the log file that will store benchmark results of the executed operations.
 ### With Clonning Repository
 ```bash
 $ git clone git@github.com:hamza-cskn/MongoDBBenchmarker.git
 $ cd MongoDBBenchmarker
-$ dotnet run .
+$ dotnet run
 ```
 
 ### With Docker
 #### Via Compose
-Firstly, copy the `docker-compose.yml` file.
+Download the `docker-compose.yml` file. Go to directory of the file.
+Configure a `operations.json` file. There is an example in the repository.
+Create a `operations.log` file. (`touch operations.log` is fine.)
 ```bash
 $ docker-compose up
 ```
 #### Via Command
+Configure a `operations.json` file. There is an example in the repository.
+Create a `operations.log` file. (`touch operations.log` is fine.)
 ```bash
 $ docker run -v <PATH_TO_CONFIG_FILE>:/app/operations.json:ro \
--v <PATH_TO_LOG_FILE>:/app/operation-log.txt \
+-v <PATH_TO_LOG_FILE>:/app/operations.log \
 --rm mongodb-benchmarker
 ```
 
