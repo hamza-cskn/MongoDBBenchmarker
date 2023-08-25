@@ -1,0 +1,37 @@
+{
+  "ConnectionString": "mongodb://root:secret123@mongo-node-1:27017/test?authSource=admin",
+  "DatabaseName": "test",
+  "CollectionName": "users",
+  "Operations": {
+    "Operation1": {
+        "OperationType": "Insert",
+        "Amount": 10,
+        "Template": {
+            "age": "%int(1,500)%"
+        }
+      },
+    "Operation2": {
+      "OperationType": "Read",
+      "Filter": {
+        "name": "Ali"
+      }
+    },
+    "Operation3": {
+      "OperationType": "Update",
+      "Filter": {
+        "name": "Ali"
+      },
+      "Update": {
+        "$set": {
+          "name": "Mustafa"
+        }
+      }
+    },
+    "Operation4": {
+      "OperationType": "Delete",
+      "Filter": {
+        "name": "Mustafa"
+      }
+    }
+  }
+}
