@@ -21,21 +21,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.9.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
         mongodb-port: 27017
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
-      env:
-        CI: true
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker run -v $(PATH)/operations.json:/app/operations.json:ro -v $(PATH)/operations.log:/app/operations.log --rm mongodb-benchmarker
+      run: docker compose up
 
