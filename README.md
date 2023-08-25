@@ -5,14 +5,24 @@ This is a simple tool to benchmark MongoDB performance. It allows to bulk update
 ## Installing
 
 ### With Clonning Repository
-```
+```bash
 $ git clone git@github.com:hamza-cskn/MongoDBBenchmarker.git
 $ cd MongoDBBenchmarker
 $ dotnet run .
 ```
 
 ### With Docker
-not supported yet
+#### Via Compose
+Firstly, copy the `docker-compose.yml` file.
+```bash
+$ docker-compose up
+```
+#### Via Command
+```bash
+$ docker run -v <PATH_TO_CONFIG_FILE>:/app/operations.json:ro \
+-v <PATH_TO_LOG_FILE>:/app/operation-log.txt \
+--rm mongodb-benchmarker
+```
 
 # Features
 MongoDB Benchmarker supports Insert, Update, Read and Delete operations.
