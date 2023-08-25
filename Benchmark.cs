@@ -5,7 +5,7 @@ public class Benchmark<T>
     private readonly Stopwatch _stopwatch = new();
     private readonly Func<T> _action;
     private readonly string _input; /* likely bson document string */
-    private static Logger _logger = new("operation-log.txt");
+    private static Logger _logger = new("operations.log");
     
     public Benchmark(Func<T> action, string input)
     {
