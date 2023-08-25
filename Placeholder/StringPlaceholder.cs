@@ -9,7 +9,7 @@ public class StringPlaceholder : IPlaceholder
 
     public static StringPlaceholder? FromString(string str)
     {
-        if (!str.StartsWith("%string(") && !str.EndsWith(")%"))
+        if (!str.StartsWith("%string(") || !str.EndsWith(")%"))
         {
             return null;
         }
