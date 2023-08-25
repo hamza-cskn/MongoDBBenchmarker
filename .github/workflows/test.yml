@@ -28,6 +28,6 @@ jobs:
         mongodb-port: 27017
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker run -e BENCHMARK_CONNECTION_STRING="mongodb://localhost:27017/" BENCHMARK_DATABASE_NAME="test" BENCMARK_COLLECTION_NAME="users" -v $(PATH)/operations.json:/app/operations.json:ro -v $(PATH)/operations.log:/app/operations.log --rm mongodb-benchmarker
+      run: docker run -e BENCHMARK_CONNECTION_STRING="mongodb://localhost:27017/" -e BENCHMARK_DATABASE_NAME="test" -e BENCMARK_COLLECTION_NAME="users" -v $(PATH)/operations.json:/app/operations.json:ro -v $(PATH)/operations.log:/app/operations.log --rm mongodb-benchmarker
 
 
