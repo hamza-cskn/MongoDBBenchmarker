@@ -15,4 +15,4 @@ RUN dotnet publish "MongoDBBenchmark.csproj" -c Release -o /app/publish /p:UseAp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MongoDBBenchmark.dll"]
+ENTRYPOINT ["dotnet", "MongoDBBenchmark.dll", "--config"]
