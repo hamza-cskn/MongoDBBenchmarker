@@ -4,8 +4,7 @@ services:
     volumes:
       - './operations.json:/app/operations.json'
       - './operations.log:/app/operations.log'
-    networks:
-        - "seyir_mongo-network"
-networks:
-    seyir_mongo-network:
-        external: true
+    environment:
+      BENCHMARK_CONNECTION_STRING: "mongodb://root:secret123@mongo-node-1:27017/test?authSource=admin"
+      BENCHMARK_DATABASE_NAME: "test"
+      BENCMARK_COLLECTION_NAME: "users"  
