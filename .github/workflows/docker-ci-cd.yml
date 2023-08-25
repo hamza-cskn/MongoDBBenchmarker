@@ -16,5 +16,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag 366366/mongodb-benchmarker:$(date +%d-%m-%y)
+    - name: Login to Docker
+      run: docker login -u 366366 -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
     - name: Deploy the Docker image
       run: docker push 366366/mongodb-benchmarker:$(date +%d-%m-%y)
