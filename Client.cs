@@ -9,8 +9,15 @@ public class Client
 
     private IMongoCollection<BsonDocument> _collection;
 
-    public void Connect(string connectionString, string databaseName, string collectionName)
+    public void Connect(string? connectionString, string? databaseName, string? collectionName)
     {
+        if (connectionString == null || databaseName == null || collectionName == null)
+        {
+            Console.WriteLine("Connection string, database name and collection name must be provided.");
+            Console.WriteLine("Please ensure that you have provided these environment variables:");
+            Console.WriteLine("BENCHMARK_DATABASE_NAME, BENCHMARK_COLLECTION_NAME, BENCHMARK_CONNECTION_STRING");
+            return;
+        }
         MongoClient client;
         try {
             client = new MongoClient(connectionString);

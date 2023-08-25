@@ -1,7 +1,4 @@
 {
-  "ConnectionString": "mongodb://root:secret123@mongo-node-1:27017/test?authSource=admin",
-  "DatabaseName": "test",
-  "CollectionName": "users",
   "Operations": {
     "Operation1": {
         "OperationType": "Insert",

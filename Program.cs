@@ -19,7 +19,7 @@ class Program {
     {
         if (args.Length == 1 && args[0] == "--config")
         {
-            Console.WriteLine("Config mode on. No input will receive.");
+            Console.WriteLine("Config mode on. No input will receive from user.");
             IConfiguration config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("./operations.json")
@@ -32,9 +32,9 @@ class Program {
 
     void RunUsingConfig(IConfiguration config)
     {
-        _client.Connect(config["ConnectionString"],
-            config["DatabaseName"],
-            config["CollectionName"]);
+        _client.Connect(Environment.GetEnvironmentVariable("BENCHMARK_CONNECTION_STRING"),
+            Environment.GetEnvironmentVariable("BENCHMARK_DATABASE_NAME"),
+            Environment.GetEnvironmentVariable("BENCHMARK_COLLECTION_NAME"));
         BsonSerializer.RegisterSerializer(new ObjectSerializer(type => true));
         foreach (var query in config.GetSection("Operations").GetChildren())
         {
