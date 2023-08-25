@@ -13,11 +13,7 @@ public class InputManager
         GetInput(msg, int.Parse, i => i > 0);
 
     public static Func<string, DocumentTemplate> GetDocumentTemplateInput = (msg) =>
-        GetInput(msg, (str) =>
-        {
-            var document = BsonDocument.Parse(str);
-            return new DocumentTemplate(str, document, MapPlaceholders(document).ToImmutableDictionary());
-        });
+        GetInput(msg, (str) => DocumentTemplate.FromString(str));
     
     public static Func<string, BsonDocument> GetDocumentInput = (msg) =>
         GetInput(msg, BsonDocument.Parse);
@@ -45,24 +41,7 @@ public class InputManager
         var document = GetDocumentTemplateInput("Please enter template document for generating:");
         return new CustomGenerator(document);
     }
-
-    /**
-     * Stores which fields are placeholders. To apply them later.
-     */
-    private static Dictionary<string, Placeholder> MapPlaceholders(BsonDocument document)
-    {
-        Dictionary<string, Placeholder> placeholders = new();
-        document.Names
-            .Where(documentName => document.GetValue(documentName).IsString).ToList()
-            .ForEach(documentName =>
-                {
-                    var val = document.GetValue(documentName);
-                    var placeholder = Placeholder.TryParse(val.AsString);
-                    if (placeholder != null)
-                        placeholders.Add(documentName, placeholder);
-                });
-        return placeholders;
-    }
+    
 
     /**
      *  Generic input method. Gets input from user, parses and validates it.
