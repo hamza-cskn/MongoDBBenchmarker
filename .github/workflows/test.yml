@@ -18,7 +18,7 @@ jobs:
     - name: Create Network
       run: docker network create mongo-network
     - name: Initialize MongoDB
-      run: docker run --name mongodb --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret -p 27017:27017
+      run: docker run --name mongodb --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret -p 27017:27017 mongo
     - name: Debug
       run: docker ps -a && docker network ls
     - uses: actions/checkout@v3
