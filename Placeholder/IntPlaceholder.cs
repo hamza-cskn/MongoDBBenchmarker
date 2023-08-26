@@ -33,8 +33,6 @@ public class IntPlaceholder : IPlaceholder
     
     public void Apply(int id, String key, BsonDocument bsonDocument)
     {
-        var val = new Random().Next(_min, _max);
-        Console.WriteLine("Applying int placeholder with value " + val);
-        bsonDocument.Set(key, val);
+        bsonDocument.Set(key, new Random().Next(_min, _max));
     }
 }
