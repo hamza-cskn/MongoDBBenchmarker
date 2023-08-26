@@ -34,6 +34,6 @@ jobs:
       run: docker ps -a
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker run -e BENCHMARK_CONNECTION_STRING="mongodb://root:secret@mongodb-github-action:27017/test?authSource=admin" -e BENCHMARK_DATABASE_NAME="test" -e BENCHMARK_COLLECTION_NAME="users" -v ./operations.json:/app/operations.json:ro -v ./operations.log:/app/operations.log --rm 366366/mongodb-benchmarker:26-08-23
+      run: docker run -e BENCHMARK_CONNECTION_STRING="mongodb://root:secret@mongodb:27017/test?authSource=admin" -e BENCHMARK_DATABASE_NAME="test" -e BENCHMARK_COLLECTION_NAME="users" -v ./operations.json:/app/operations.json:ro -v ./operations.log:/app/operations.log --rm 366366/mongodb-benchmarker:26-08-23
 
 
