@@ -20,8 +20,10 @@ class Program {
         if (args.Length == 1 && args[0] == "--config")
         {
             Console.WriteLine("Config mode on. No input will receive from user.");
+            var configPath = Environment.GetEnvironmentVariable("BENCHMARK_CONFIG_PATH");
             IConfiguration config = new ConfigurationBuilder()
-                .AddJsonFile(AppDomain.CurrentDomain.BaseDirectory + "operations.json")
+                .SetBasePath(configPath != null ? configPath : AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("/operations.json")
                 .Build();
             new Program().RunUsingConfig(config);
             return;
