@@ -26,10 +26,8 @@ public class Client
             Console.WriteLine(e.Message);
             return;
         }
-        client.GetDatabase(databaseName).CreateCollection(collectionName);
-        _collection =  client
-            .GetDatabase(databaseName)
-            .GetCollection<BsonDocument>(collectionName);
+        var database = client.GetDatabase(databaseName);
+        _collection = database.GetCollection<BsonDocument>(collectionName);
     }
 
     public List<BsonDocument> Read(BsonDocument filter)
