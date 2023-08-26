@@ -21,7 +21,7 @@ class Program {
         {
             Console.WriteLine("Config mode on. No input will receive from user.");
             IConfiguration config = new ConfigurationBuilder()
-                .AddJsonFile("operations.json")
+                .AddJsonFile(AppDomain.CurrentDomain.BaseDirectory + "operations.json")
                 .Build();
             new Program().RunUsingConfig(config);
             return;
