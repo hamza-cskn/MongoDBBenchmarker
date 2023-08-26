@@ -64,5 +64,11 @@ You can specify placeholders in template documents. The document generator will 
   * Format: `%int(5,10)%`
 
  ## Config Mode
- use `dotnet run --config` command to get inputs from the `operations.json` file. In config mode, no input will receive from the user. So, you have to specify connection credentials using these environment variables: `BENCHMARK_DATABASE_NAME`, `BENCHMARK_COLLECTION_NAME`, `BENCHMARK_CONNECTION_STRING`.
+Use `dotnet run --config` command to get inputs from the `operations.json` file.
 
+In config mode, no input will receive from the user. So, you have to specify connection credentials using these environment variables: 
+* `BENCHMARK_DATABASE_NAME`
+* `BENCHMARK_COLLECTION_NAME`
+* `BENCHMARK_CONNECTION_STRING`
+
+Also, you can specify location of `operations.json` file with `BENCHMARK_CONFIG_PATH` variable. It completely optional.
