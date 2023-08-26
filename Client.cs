@@ -16,7 +16,7 @@ public class Client
             Console.WriteLine("Connection string, database name and collection name must be provided.");
             Console.WriteLine("Please ensure that you have provided these environment variables:");
             Console.WriteLine("BENCHMARK_DATABASE_NAME, BENCHMARK_COLLECTION_NAME, BENCHMARK_CONNECTION_STRING");
-            return;
+            Environment.Exit(0);
         }
         MongoClient client;
         try {
@@ -26,6 +26,7 @@ public class Client
             Console.WriteLine(e.Message);
             return;
         }
+        client.GetDatabase(databaseName).CreateCollection(collectionName);
         _collection =  client
             .GetDatabase(databaseName)
             .GetCollection<BsonDocument>(collectionName);
