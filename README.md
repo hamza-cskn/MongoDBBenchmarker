@@ -71,4 +71,4 @@ In config mode, no input will receive from the user. So, you have to specify con
 * `BENCHMARK_COLLECTION_NAME`
 * `BENCHMARK_CONNECTION_STRING`
 
-Also, you can specify location of `operations.json` file with `BENCHMARK_CONFIG_PATH` variable. It completely optional.
+Also, you can specify location of `operations.json` file with `BENCHMARK_CONFIG_PATH` variable. It is completely optional.
