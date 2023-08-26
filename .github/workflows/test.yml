@@ -15,25 +15,14 @@ jobs:
         node-version: [20.x]
         mongodb-version: ['6.0']
     steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.9.0
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
-        mongodb-port: 27017
-        mongodb-db: "test"
-        mongodb-username: "root"
-        mongodb-password: "secret"
-    - name: debug
-      run: docker ps -a
+    - name: Create Network
+      run: docker network create mongo-network
+    - name: Initialize MongoDB
+      run: docker run --name mongodb --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret -p 27017:27017
+    - name: Debug
+      run: docker ps -a && docker network ls
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker run -e BENCHMARK_CONNECTION_STRING="mongodb://root:secret@mongodb:27017/test?authSource=admin" -e BENCHMARK_DATABASE_NAME="test" -e BENCHMARK_COLLECTION_NAME="users" -v ./operations.json:/app/operations.json:ro -v ./operations.log:/app/operations.log --rm 366366/mongodb-benchmarker:26-08-23
+      run: docker run --network mongo-network -e BENCHMARK_CONNECTION_STRING="mongodb://root:secret@mongodb:27017/test?authSource=admin" -e BENCHMARK_DATABASE_NAME="test" -e BENCHMARK_COLLECTION_NAME="users" -v ./operations.json:/app/operations.json:ro -v ./operations.log:/app/operations.log --rm 366366/mongodb-benchmarker:26-08-23
 
 
