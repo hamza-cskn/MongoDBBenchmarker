@@ -22,7 +22,7 @@ jobs:
         BENCHMARK_CONNECTION_STRING: "mongodb://root:secret@localhost:27017/test?authSource=admin"
         BENCHMARK_DATABASE_NAME: "test"
         BENCHMARK_COLLECTION_NAME: "users"
-        BENCHMARK_CONFIG_PATH: "/home/runner/work/MongoDBBenchmarker/MongoDBBenchmarker/operations.json"
+        BENCHMARK_CONFIG_PATH: "/home/runner/work/MongoDBBenchmarker/MongoDBBenchmarker/"
       run: dotnet run --config
 
 
