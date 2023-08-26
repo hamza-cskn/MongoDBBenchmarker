@@ -1,11 +1,10 @@
 name: MongoDB Test
 
 on:
-  workflow_run:
-    workflows: ["Docker Image CI/CD"]
-    branches: [master]
-    types: 
-      - completed
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -15,14 +14,14 @@ jobs:
         node-version: [20.x]
         mongodb-version: ['6.0']
     steps:
-    - name: Create Network
-      run: docker network create mongo-network
-    - name: Initialize MongoDB
-      run: docker run -d --name mongodb --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret -p 27017:27017 mongo
-    - name: Debug
-      run: docker ps -a && docker network ls
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker run --network mongo-network -e BENCHMARK_CONNECTION_STRING="mongodb://root:secret@mongodb:27017/test?authSource=admin" -e BENCHMARK_DATABASE_NAME="test" -e BENCHMARK_COLLECTION_NAME="users" -v ./operations.json:/app/operations.json:ro -v ./operations.log:/app/operations.log --rm 366366/mongodb-benchmarker:26-08-23
+    - name: Initialize MongoDB
+      run: docker run -d --network host --name mongodb -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret -p 27017:27017 mongo
+    - name: Run Application
+      env:
+        BENCHMARK_CONNECTION_STRING: "mongodb://root:secret@localhost:27017/test?authSource=admin"
+        BENCHMARK_DATABASE_NAME: "test"
+        BENCHMARK_COLLECTION_NAME: "users"
+      run: dotnet run --config
 
 
