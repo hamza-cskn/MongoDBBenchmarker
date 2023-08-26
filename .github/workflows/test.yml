@@ -1,10 +1,11 @@
 name: MongoDB Test
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_run:
+    workflows: ["Docker Image CI/CD"]
+    branches: [master]
+    types: 
+      - completed
 
 jobs:
   build:
