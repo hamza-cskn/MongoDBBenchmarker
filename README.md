@@ -1,10 +1,10 @@
 # MongoDB Benchmarker
 
-This is a simple tool to benchmark MongoDB performance. It allows to bulk updates, inserts, reads and deletes. It generates random data as you want. For each query it measures the time it took to execute it and the number of operations per second.
+This is a simple tool to benchmark MongoDB performance. It allows bulk updates, inserts, reads, and deletes. It generates random data as you want. For each query, it measures the time it took to execute it and the number of operations per second.
 
 ## Installing
 You need `operations.json` and `operations.log` files to use the application properly. 
-* `operations.json` file is a configuration file for bulk operations. You have to configure it for using with Docker. However if you want to use CLI mode, you don't need it.
+* `operations.json` file is a configuration file for bulk operations. You have to configure it for use with Docker. However, if you want to use CLI mode, you don't need it.
 * `operations.log` file is the log file that will store benchmark results of the executed operations.
 ### With Clonning Repository
 ```bash
@@ -14,16 +14,18 @@ $ dotnet run
 ```
 
 ### With Docker
+Click [here](https://hub.docker.com/repository/docker/366366/mongodb-benchmarker/general) to see the Docker Hub page.
+
 #### Via Compose
-Download the `docker-compose.yml` file. Go to directory of the file.
-Configure a `operations.json` file. There is an example in the repository.
-Create a `operations.log` file. (`touch operations.log` is fine.)
+Download the `docker-compose.yml` file. Go to the directory of the file.
+Configure an `operations.json` file. There is an example in the repository.
+Create an `operations.log` file. (`touch operations.log` is fine.)
 ```bash
 $ docker-compose up
 ```
 #### Via Command
-Configure a `operations.json` file. There is an example in the repository.
-Create a `operations.log` file. (`touch operations.log` is fine.)
+Configure an `operations.json` file. There is an example in the repository.
+Create an `operations.log` file. (`touch operations.log` is fine.)
 ```bash
 $ docker run -v <PATH_TO_CONFIG_FILE>:/app/operations.json:ro \
 -v <PATH_TO_LOG_FILE>:/app/operations.log \
@@ -31,10 +33,10 @@ $ docker run -v <PATH_TO_CONFIG_FILE>:/app/operations.json:ro \
 ```
 
 # Features
-MongoDB Benchmarker supports Insert, Update, Read and Delete operations.
+MongoDB Benchmarker supports Insert, Update, Read, and Delete operations.
 
 ## Logging
-Every operation is stored in operations.log file. Here's example logs.
+Every operation is stored in operations.log file. Here are example logs.
 ```log
 2023-08-23 21:14:12 - INSERT - Count: 1000, Time: 00:00:00.1622390, Template: {name:"saadasdsa"}
 2023-08-23 21:14:33 - INSERT - Count: 100000, Time: 00:00:09.7082600, Template: {name:"saadasdsa"}
@@ -50,7 +52,7 @@ Every operation is stored in operations.log file. Here's example logs.
 ```
 
 ## Placeholders
-You can specify placeholders in template documents. The document generator will handle them before bulk insert.
+You can specify placeholders in template documents. The document generator will handle them before bulk inserting.
 ```
 {name: "Hamza", age: "%int(10,80)%", resume: "%string(500)%"}
 ```
@@ -58,17 +60,17 @@ You can specify placeholders in template documents. The document generator will 
 ### Placeholder List
 * **Id:** Iteration number.
   * Format: `%id%`
-* **Random String** randomized string with specific length.
+* **Random String** randomized string with a specific length.
   * Format: `%string(n)%`
-* **Random Integer** random integer in specific range.
+* **Random Integer** random integer in a specific range.
   * Format: `%int(5,10)%`
 
  ## Config Mode
 Use `dotnet run --config` command to get inputs from the `operations.json` file.
 
-In config mode, no input will receive from the user. So, you have to specify connection credentials using these environment variables: 
+In config mode, no input will be received from the user. So, you have to specify connection credentials using these environment variables: 
 * `BENCHMARK_DATABASE_NAME`
 * `BENCHMARK_COLLECTION_NAME`
 * `BENCHMARK_CONNECTION_STRING`
 
-Also, you can specify location of `operations.json` file with `BENCHMARK_CONFIG_PATH` variable. It is completely optional.
+Also, you can specify a location of `operations.json` file with `BENCHMARK_CONFIG_PATH` variable. It is completely optional.
